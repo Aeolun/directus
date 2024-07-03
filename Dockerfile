@@ -3,7 +3,7 @@
 ####################################################################################################
 ## Build Packages
 
-FROM node:18-alpine AS builder
+FROM node:18 AS builder
 WORKDIR /directus
 
 ARG TARGETPLATFORM
@@ -12,7 +12,7 @@ ENV NODE_OPTIONS=--max-old-space-size=8192
 
 RUN <<EOF
   if [ "$TARGETPLATFORM" = 'linux/arm64' ]; then
-  	apk --no-cache add python3 build-base
+  	apt-get update && apt-get install python3 build-essential -y
   	ln -sf /usr/bin/python3 /usr/bin/python
   fi
 EOF
@@ -41,7 +41,7 @@ EOF
 ####################################################################################################
 ## Create Production Image
 
-FROM node:18-alpine AS runtime
+FROM node:18 AS runtime
 
 RUN npm install --global pm2@5
 
